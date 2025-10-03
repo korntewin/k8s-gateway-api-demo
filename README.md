@@ -2,7 +2,7 @@
 
 This project is a show case for **Kubernetes' [Gateway API]** features. **Gateway API** is a new k8s object to replace the **Ingress** object (**Ingress** features are frozen; all updates will be on **Gateway API** from now on). **Gateway API** has multiple advantages and features over **Ingress**; for instance:
 
-- *Traffic splitting*: define multiple backends with *weights* to control traffic routing; suitable for use cases like *A/B testing*.
+- *Traffic splitting*: define multiple backends with *weights* to control traffic routing. With **Ingress** we need to calcualte the number of pods for each manually 😂; suitable for use cases like *A/B testing*.
 - *Supports HTTP/gRPC/TCP/UDP protocols*
 - *Better dev experience*: *Gateway API* is designed with three personas in mind (infra operator, cluster operator, and developer), making the API more intuitive and easier to use across roles.
 - *Supports both North/South (external/internal) and East/West (mesh) patterns*
