@@ -12,7 +12,7 @@ In this project, the **[Istio]** is used as the **Gateway API provider** and a s
 
 **Istio Gateway API Operator** will monitor the **Custom Resource** object in the cluster and spinup native *k8s* objects accordingly.
 
-<img src="docs/diagram.png" width="auto">
+<img src="docs/diagram.jpg" width="auto">
 
 ## Highlighted Components
 
