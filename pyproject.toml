@@ -1,0 +1,24 @@
+[project]
+name = "k8s-services"
+version = "v0.1.0"
+description = "k8s services"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pymongo>=4.15.1",
+]
+
+[tool.uv.workspace]
+members = ["services/*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.2",
+]

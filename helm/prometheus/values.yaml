@@ -1,0 +1,8 @@
+gateway:
+  referenceGrant:
+    enabled: true
+    fromNamespaces:
+      - istio-gateway
+    serviceName: prometheus-grafana
+
+

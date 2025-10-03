@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: k8s-services/apiserver
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8000
+
+mongodb:
+  database: uploads
+  collection: records
+  connectionStringSecret:
+    create: true
+    # override in production (like injecting via CI/CD or reference secret from cloud vendoer secret store directly)
+    value: bW9uZ29kYjovL3Jvb3Q6Y2hhbmdlTWVAbW9uZ29kYi1tb25nb2RiLXN2Yy5tb25nb2RiLWNsdXN0ZXIuc3ZjLmNsdXN0ZXIubG9jYWw6MjcwMTcvdXBsb2Fkcz9hdXRoU291cmNlPWFkbWlu
+
+gateway:
+  referenceGrant:
+    enabled: true
+    fromNamespaces:
+      - istio-gateway

@@ -1,0 +1,20 @@
+fullnameOverride: dagster
+
+gateway:
+  referenceGrant:
+    enabled: true
+    fromNamespaces:
+      - istio-gateway
+    serviceName: dagster-dagster-webserver
+
+secrets:
+  create: true
+  data:
+    # base64 encoded: changeMe
+    DAGSTER_PG_PASSWORD: Y2hhbmdlTWU=
+    POSTGRES_PASSWORD: Y2hhbmdlTWU=
+    # base64 for: minioadmin / changeMe (override for prod)
+    MINIO_ACCESS_KEY: bWluaW9hZG1pbg==
+    MINIO_SECRET_KEY: Y2hhbmdlTWU=
+    # base64 for your Mongo URI (override for prod)
+    UPLOADS_MONGODB_URI: bW9uZ29kYjovL3Jvb3Q6Y2hhbmdlTWVAbW9uZ29kYi1tb25nb2RiLXN2Yy5tb25nb2RiLWNsdXN0ZXIuc3ZjLmNsdXN0ZXIubG9jYWw6MjcwMTcvdXBsb2Fkcz9hdXRoU291cmNlPWFkbWlu

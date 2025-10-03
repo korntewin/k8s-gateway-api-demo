@@ -1,0 +1,1 @@
+The Spark master service is reachable at spark://{{ include "spark.fullname" . }}-master:{{ .Values.master.rpcPort }}.

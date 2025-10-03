@@ -1,0 +1,16 @@
+{{- $gateway := .Values.mongodbGateway -}}
+{{- if $gateway }}
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: mongodb-tcp-route
+spec:
+  parentRefs:
+    - name: {{ $gateway.name }}
+      sectionName: mongodb
+  rules:
+    - backendRefs:
+        - name: mongodb-mongodb-svc
+          namespace: mongodb-cluster
+          port: 27017
+{{- end }}

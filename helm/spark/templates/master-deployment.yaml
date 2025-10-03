@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark.fullname" . }}-master
+  labels:
+    {{- include "spark.labels" . | nindent 4 }}
+    app.kubernetes.io/component: master
+spec:
+  replicas: {{ .Values.master.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "spark.name" . }}
+      app.kubernetes.io/component: master
+  template:
+    metadata:
+      labels:
+        {{- include "spark.labels" . | nindent 8 }}
+        app.kubernetes.io/component: master
+    spec:
+      containers:
+        - name: master
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPARK_MODE
+              value: master
+            - name: SPARK_RPC_PORT
+              value: "{{ .Values.master.rpcPort }}"
+            - name: SPARK_MASTER_WEBUI_PORT
+              value: "{{ .Values.master.webPort }}"
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.master.rpcPort }}
+            - name: web
+              containerPort: {{ .Values.master.webPort }}

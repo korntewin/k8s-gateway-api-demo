@@ -1,0 +1,23 @@
+{{- $gateway := .Values.grafanaGateway -}}
+{{- if and $gateway ($gateway.enabled | default true) }}
+{{- $backend := $gateway.backend | default (dict) -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana-http-route
+spec:
+  parentRefs:
+    - name: {{ $gateway.name }}
+      sectionName: http
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ $backend.name | default "prometheus-grafana" }}
+          namespace: {{ $backend.namespace | default "monitoring" }}
+          port: {{ $backend.port | default 80 }}
+{{- end }}
+
+

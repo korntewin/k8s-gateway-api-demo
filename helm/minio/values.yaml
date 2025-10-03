@@ -1,0 +1,14 @@
+fullnameOverride: minio
+
+image:
+  repository: quay.io/minio/minio
+  tag: RELEASE.2024-04-18T19-09-19Z
+  pullPolicy: IfNotPresent
+
+accessKey: bWluaW9hZG1pbg==
+secretKey: Y2hhbmdlTWU=
+
+service:
+  type: ClusterIP
+  apiPort: 9000
+  consolePort: 9001

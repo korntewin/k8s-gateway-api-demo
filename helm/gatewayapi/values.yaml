@@ -1,0 +1,54 @@
+mongodbGateway:
+  name: mongodb-gateway
+  gatewayClassName: istio
+  listeners:
+    - name: mongodb
+      port: 27018
+      protocol: TCP
+      allowedRoutes:
+        kinds:
+          - kind: TCPRoute
+
+apiserverGateway:
+  enabled: true
+  name: apiserver-gateway
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      port: 8010
+      protocol: HTTP
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+
+dagsterGateway:
+  enabled: true
+  name: dagster-gateway
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      port: 3010
+      protocol: HTTP
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+  backend:
+    name: dagster-dagster-webserver
+    namespace: dagster
+    port: 80
+
+grafanaGateway:
+  enabled: true
+  name: grafana-gateway
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      port: 4010
+      protocol: HTTP
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+  backend:
+    name: prometheus-grafana
+    namespace: monitoring
+    port: 80

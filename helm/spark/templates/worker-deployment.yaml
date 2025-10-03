@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark.fullname" . }}-worker
+  labels:
+    {{- include "spark.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "spark.name" . }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "spark.labels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      containers:
+        - name: worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPARK_MODE
+              value: worker
+            - name: SPARK_MASTER_URL
+              value: spark://{{ include "spark.fullname" . }}-master:{{ .Values.master.rpcPort }}
+            - name: SPARK_WORKER_CORES
+              value: "{{ .Values.worker.cores }}"
+            - name: SPARK_WORKER_MEMORY
+              value: "{{ .Values.worker.memory }}"
+            - name: SPARK_WORKER_WEBUI_PORT
+              value: "{{ .Values.worker.webPort }}"
+          ports:
+            - name: web
+              containerPort: {{ .Values.worker.webPort }}

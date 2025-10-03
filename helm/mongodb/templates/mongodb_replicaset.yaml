@@ -1,0 +1,48 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: {{ include "mongodb.fullname" . }}
+  labels:
+    {{- include "mongodb.labels" . | nindent 4 }}
+    {{- with .Values.replicaSet.additionalLabels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+spec:
+  members: {{ .Values.replicaSet.members }}
+  type: ReplicaSet
+  version: {{ .Values.replicaSet.version | quote }}
+  {{- $hasPVC := and .Values.replicaSet.persistent (hasKey .Values.replicaSet "dataVolume") }}
+  {{- if $hasPVC }}
+  statefulSet:
+    spec:
+      volumeClaimTemplates:
+        - metadata:
+            name: data-volume
+          spec:
+            accessModes:
+{{ toYaml .Values.replicaSet.dataVolume.accessModes | nindent 12 }}
+            {{- with .Values.replicaSet.dataVolume.storageClassName }}
+            storageClassName: {{ . }}
+            {{- end }}
+            resources:
+              requests:
+                storage: {{ .Values.replicaSet.dataVolume.storage }}
+  {{- end }}
+  {{- with .Values.replicaSet.additionalMongodConfig }}
+  additionalMongodConfig:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.auth.enabled }}
+  security:
+    authentication:
+      modes:
+{{ toYaml .Values.auth.modes | nindent 6 }}
+  users:
+    - name: {{ .Values.auth.adminUser.username }}
+      db: {{ .Values.auth.adminUser.database }}
+      passwordSecretRef:
+        name: {{ include "mongodb.adminSecretName" . }}
+      roles:
+{{ toYaml .Values.auth.adminUser.roles | nindent 8 }}
+  {{- end }}
+      scramCredentialsSecretName: root-scram

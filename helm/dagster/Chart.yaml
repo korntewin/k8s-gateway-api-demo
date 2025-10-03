@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dagster
+description: Minimal Dagster deployment for Mongo to Delta orchestration
+type: application
+version: 0.1.0
+appVersion: "1.6.14"

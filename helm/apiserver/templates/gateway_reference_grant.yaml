@@ -1,0 +1,18 @@
+{{- $grant := .Values.gateway.referenceGrant -}}
+{{- if and $grant ($grant.enabled | default false) }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: {{ include "apiserver.fullname" . }}-gateway-access
+spec:
+  from:
+{{- range $grant.fromNamespaces }}
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: {{ . }}
+{{- end }}
+  to:
+    - group: ""
+      kind: Service
+      name: {{ include "apiserver.fullname" . }}
+{{- end }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: gatewayapi
+description: Gateway API resources for exposing services via Istio-managed Gateways
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

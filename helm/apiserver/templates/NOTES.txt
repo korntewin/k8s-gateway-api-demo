@@ -1,0 +1,9 @@
+1. The apiserver deployment {{ include "apiserver.fullname" . }} is now available on port {{ .Values.service.port }}.
+
+   To port-forward locally:
+     kubectl port-forward svc/{{ include "apiserver.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+2. The MongoDB connection string is stored in Secret "{{ include "apiserver.mongodbSecretName" . }}".
+
+   Decode it with:
+     kubectl get secret {{ include "apiserver.mongodbSecretName" . }} -o jsonpath='{.data.{{ include "apiserver.mongodbSecretKey" . }}'} | base64 -d

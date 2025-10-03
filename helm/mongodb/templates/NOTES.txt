@@ -1,0 +1,13 @@
+MongoDB ReplicaSet {{ include "mongodb.fullname" . }} has been created.
+
+{{- $svc := default (dict) .Values.replicaSetService -}}
+{{- $mongoPort := default 27017 $svc.port -}}
+
+To get the connection string inside the cluster:
+  mongodb://{{ .Values.auth.adminUser.username }}:$(kubectl get secret {{ include "mongodb.adminSecretName" . }} -n {{ .Release.Namespace }} -o jsonpath='{.data.password}' | base64 -d)@{{ include "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ $mongoPort }}/{{ .Values.auth.adminUser.database }}
+
+To port-forward from your local machine:
+  kubectl port-forward svc/{{ include "mongodb.fullname" . }} -n {{ .Release.Namespace }} 27017:{{ $mongoPort }}
+
+If you enabled authentication, the admin credentials are stored in Secret
+"{{ include "mongodb.adminSecretName" . }}".

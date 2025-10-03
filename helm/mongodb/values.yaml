@@ -1,0 +1,40 @@
+replicaSet:
+  additionalLabels: {}
+  version: "6.0.5"
+  members: 2
+
+  persistent: true
+
+  dataVolume:
+    accessModes:
+      - ReadWriteOnce
+    storage: 20Gi
+    storageClassName: ""
+
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib
+
+auth:
+  enabled: true
+  modes:
+    - SCRAM
+
+  adminUser:
+    username: root
+    # in real use-case, this will be injected during CI/CD time
+    # or just use secret store from cloud provider for security
+    password: Y2hhbmdlTWU=
+    database: admin
+    roles:
+      - name: root
+        db: admin
+      - name: userAdminAnyDatabase
+        db: admin
+
+resources: {}
+
+gateway:
+  referenceGrant:
+    enabled: true
+    fromNamespaces:
+      - istio-gateway

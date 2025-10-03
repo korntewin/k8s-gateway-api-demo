@@ -1,0 +1,1 @@
+The MinIO API endpoint is available at http://{{ include "minio.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.apiPort }}.

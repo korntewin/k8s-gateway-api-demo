@@ -1,0 +1,47 @@
+{{- $image := .Values.image | default (dict) -}}
+{{- $service := .Values.service | default (dict) -}}
+{{- $mongodb := .Values.mongodb | default (dict) -}}
+{{- $secret := $mongodb.connectionStringSecret | default (dict) -}}
+{{- $autoscaling := .Values.autoscaling | default (dict) -}}
+{{- $replicas := .Values.replicaCount | default 1 -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apiserver.fullname" . }}
+  labels:
+    {{- include "apiserver.labels" . | nindent 4 }}
+spec:
+{{- if not ($autoscaling.enabled | default false) }}
+  replicas: {{ $replicas }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "apiserver.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "apiserver.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: apiserver
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ $image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ default 8000 $service.port }}
+          env:
+            - name: UPLOADS_MONGODB_URI
+{{- if or ($secret.create | default false) $secret.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "apiserver.mongodbSecretName" . }}
+                  key: {{ include "apiserver.mongodbSecretKey" . }}
+{{- else if $secret.value }}
+              value: {{ $secret.value | quote }}
+{{- else }}
+              value: "mongodb://localhost:27017"
+{{- end }}
+            - name: UPLOADS_MONGODB_DATABASE
+              value: {{ ($mongodb.database | default "uploads") | quote }}
+            - name: UPLOADS_MONGODB_COLLECTION
+              value: {{ ($mongodb.collection | default "records") | quote }}

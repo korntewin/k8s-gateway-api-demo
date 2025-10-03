@@ -1,0 +1,6 @@
+apiVersion: v2
+name: minio
+description: Lightweight MinIO deployment to emulate S3 for Delta Lake
+version: 0.1.0
+type: application
+appVersion: "2024.4.18"

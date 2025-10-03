@@ -1,0 +1,45 @@
+{{- $autoscaling := .Values.autoscaling | default (dict) -}}
+{{- if $autoscaling.enabled | default false }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "apiserver.fullname" . }}
+  labels:
+    {{- include "apiserver.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "apiserver.fullname" . }}
+  minReplicas: {{ $autoscaling.minReplicas | default 1 }}
+  maxReplicas: {{ $autoscaling.maxReplicas | default 3 }}
+{{- $cpuTarget := $autoscaling.targetCPUUtilizationPercentage }}
+{{- $memTarget := $autoscaling.targetMemoryUtilizationPercentage }}
+{{- if or $cpuTarget $memTarget }}
+  metrics:
+{{- if $cpuTarget }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $cpuTarget }}
+{{- end }}
+{{- if $memTarget }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ $memTarget }}
+{{- end }}
+{{- else }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+{{- end }}
+{{- end }}

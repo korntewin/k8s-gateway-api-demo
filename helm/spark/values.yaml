@@ -1,0 +1,17 @@
+fullnameOverride: spark
+
+image:
+  repository: bitnami/spark
+  tag: 3.5.1
+  pullPolicy: IfNotPresent
+
+master:
+  replicas: 1
+  rpcPort: 7077
+  webPort: 8080
+
+worker:
+  replicas: 1
+  cores: 1
+  memory: 2g
+  webPort: 8081

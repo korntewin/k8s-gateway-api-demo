@@ -1,0 +1,19 @@
+[project]
+name = "dagster_service"
+version = "0.1.0"
+description = "Dagster job to sync MongoDB uploads into Delta Lake"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "dagster>=1.11.12",
+    "dagster-k8s>=0.27.12",
+    "dagster-postgres>=0.27.12",
+    "dagster-webserver>=1.11.12",
+    "delta-spark>=4.0.0",
+    "pymongo>=4.15.1",
+    "pyspark>=4.0.1",
+]
+
+[tool.dagster]
+module = "dagster_service.src.jobs"
+attribute = "defs"
